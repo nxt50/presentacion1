@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeLabs - Desarrollo de Software Innovador</title>
+    <meta name="description" content="Transformamos ideas en soluciones digitales de clase mundial con tecnología de punta y equipos excepcionales.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        /* ==================== VARIABLES ==================== */
+        :root {
+            --primary-color: #02b4f0;
+            --primary-dark: #00a0d8;
+            --secondary-color: #203a54;
+            --text-light: #ffffff;
+            --text-dark: #1a1a2e;
+            --text-muted: #94a3b8;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --accent-gradient: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            --card-shadow: 0 10px 40px rgba(2, 180, 240, 0.1);
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ==================== GLOBAL ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-dark);
+            background-color: var(--text-light);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ==================== PRELOADER ==================== */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-dark) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .loader-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        .loader-dots {
+            display: inline-flex;
+            gap: 0.3rem;
+        }
+
+        .loader-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loader-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loader-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* ==================== NAVBAR ==================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(32, 58, 84, 0.65);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: var(--transition-smooth);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar.scrolled {
+            padding: 0.6rem 0;
+            background: rgba(32, 58, 84, 0.65);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(2, 180, 240, 0.15);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-light) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: translateY(-2px);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(2, 180, 240, 0.3);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-light) !important;
+            background: rgba(2, 180, 240, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link:hover::before {
+            width: 80%;
+        }
+
+        .nav-link.active {
+            color: var(--text-light) !important;
+            background: rgba(2, 180, 240, 0.15);
+        }
+
+        .nav-link.active::before {
+            width: 80%;
+        }
+
+        .nav-cta {
+            background: var(--accent-gradient) !important;
+            color: var(--text-light) !important;
+            padding: 0.6rem 1.5rem !important;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(2, 180, 240, 0.3);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 25px rgba(2, 180, 240, 0.4);
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(2, 180, 240, 0.15);
+            color: var(--primary-color);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards 0.3s;
+            border: 1px solid rgba(2, 180, 240, 0.3);
+        }
+
+        .hero-badge i {
+            font-size: 0.8rem;
+            animation: pulse 2s infinite;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .typing-text {
+            display: inline-block;
+            position: relative;
+            min-height: 1.2em; /* Evita salto de layout al borrar texto */
+        }
+
+        .typing-text::after {
+            content: '|';
+            position: absolute;
+            right: -10px;
+            animation: blink 0.8s infinite;
+            color: var(--primary-color);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards 0.5s;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards 0.7s;
+        }
+
+        .btn-primary-custom {
+            background: var(--accent-gradient);
+            color: var(--text-light);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-smooth);
+            border: none;
+            box-shadow: 0 4px 20px rgba(2, 180, 240, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(2, 180, 240, 0.4);
+            color: var(--text-light);
+        }
+
+        .btn-outline-custom {
+            color: var(--text-light);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-smooth);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-outline-custom:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px);
+            color: var(--text-light);
+        }
+
+        .hero-visual {
+            position: relative;
+            opacity: 0;
+            transform: translateX(50px) scale(0.9);
+            animation: fadeInRight 0.8s forwards 0.4s;
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .hero-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 30px 80px rgba(2, 180, 240, 0.3);
+        }
+
+        .code-editor {
+            background: var(--bg-dark);
+            border-radius: 10px;
+            padding: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot:nth-child(1) { background: #ff5f57; }
+        .code-dot:nth-child(2) { background: #ffbd2e; }
+        .code-dot:nth-child(3) { background: #28ca42; }
+
+        .code-line {
+            color: var(--text-muted);
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .code-line:nth-child(4) { animation-delay: 0.1s; }
+        .code-line:nth-child(5) { animation-delay: 0.2s; }
+        .code-line:nth-child(6) { animation-delay: 0.3s; }
+        .code-line:nth-child(7) { animation-delay: 0.4s; }
+
+        .code-keyword { color: #c792ea; }
+        .code-function { color: #82aaff; }
+        .code-string { color: #c3e88d; }
+        .code-comment { color: #546e7a; font-style: italic; }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(2, 180, 240, 0.1), rgba(0, 160, 216, 0.05));
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -50px;
+            animation-delay: 5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            left: -75px;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* ==================== ABOUT SECTION ==================== */
+        .about-section {
+            padding: 6rem 0;
+            background: var(--bg-light);
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 30px;
+            height: 2px;
+            background: var(--accent-gradient);
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .about-img-wrapper {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            transition: var(--transition-smooth);
+        }
+
+        .about-img-wrapper:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(2, 180, 240, 0.2);
+        }
+
+        .about-img-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .about-img-wrapper:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-img-accent {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            opacity: 0.8;
+            filter: blur(40px);
+        }
+
+        .about-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--text-light);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(2, 180, 240, 0.1);
+        }
+
+        .about-feature:hover {
+            transform: translateX(10px);
+            box-shadow: var(--card-shadow);
+            border-color: var(--primary-color);
+        }
+
+        .about-feature-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(2, 180, 240, 0.2);
+        }
+
+        .about-feature h5 {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .about-feature p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* ==================== SERVICES SECTION ==================== */
+        .services-section {
+            padding: 6rem 0;
+            background: var(--text-light);
+        }
+
+        .service-card-wrapper {
+            height: 100%;
+            perspective: 1000px;
+        }
+
+        .service-card {
+            background: var(--text-light);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            height: 100%;
+            transition: var(--transition-smooth);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            border-color: rgba(2, 180, 240, 0.2);
+            box-shadow: 0 20px 60px rgba(2, 180, 240, 0.15);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--accent-gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            transition: var(--transition-smooth);
+            box-shadow: 0 10px 30px rgba(2, 180, 240, 0.3);
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 15px 40px rgba(2, 180, 240, 0.4);
+        }
+
+        .service-card h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            min-height: 80px;
+        }
+
+        .service-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .service-link:hover {
+            color: var(--primary-dark);
+            gap: 0.8rem;
+        }
+
+        /* ==================== BLOG SECTION ==================== */
+        .blog-card {
+            background: var(--text-light);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: var(--transition-smooth);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(2, 180, 240, 0.15);
+        }
+
+        .blog-img-wrapper {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .blog-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .blog-card:hover .blog-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .blog-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--accent-gradient);
+            color: var(--text-light);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(2, 180, 240, 0.3);
+        }
+
+        .blog-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .blog-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .blog-body h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .blog-body p {
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+            flex-grow: 1;
+        }
+
+        .blog-read-more {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .blog-read-more:hover {
+            color: var(--primary-dark);
+            gap: 0.8rem;
+        }
+
+        /* ==================== CONTACT SECTION ==================== */
+        .contact-section {
+            padding: 6rem 0;
+            background: var(--bg-light);
+        }
+
+        .contact-info-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--text-light);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(2, 180, 240, 0.1);
+        }
+
+        .contact-info-card:hover {
+            transform: translateX(10px);
+            box-shadow: var(--card-shadow);
+            border-color: var(--primary-color);
+        }
+
+        .contact-info-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(2, 180, 240, 0.2);
+        }
+
+        .contact-info-card h6 {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-info-card p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .contact-form-card {
+            background: var(--text-light);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(2, 180, 240, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid rgba(2, 180, 240, 0.1);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            background: var(--bg-light);
+        }
+
+        .form-control-custom:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(2, 180, 240, 0.1);
+            background: var(--text-light);
+        }
+
+        textarea.form-control-custom {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* ==================== FOOTER ==================== */
+        footer {
+            background: var(--secondary-color);
+            color: var(--text-light);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-desc {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            transition: var(--transition-smooth);
+        }
+
+        .social-link:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+            color: var(--text-light);
+        }
+
+        .footer-heading {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-bottom-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-bottom-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* ==================== SCROLL TO TOP ==================== */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gradient);
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 20px rgba(2, 180, 240, 0.3);
+            z-index: 999;
+        }
+
+        .scroll-top-btn.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 30px rgba(2, 180, 240, 0.4);
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-desc {
+                font-size: 1rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-bottom-links {
+                justify-content: center;
+            }
+
+            .navbar-nav {
+                background: rgba(32, 58, 84, 0.98);
+                padding: 1rem;
+                border-radius: 10px;
+                margin-top: 1rem;
+            }
+
+            .nav-link {
+                padding: 0.8rem 1rem !important;
+            }
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            z-index: 10001;
+            transition: width 0.2s ease;
+            box-shadow: 0 0 10px rgba(2, 180, 240, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress"></div>
+
+    <!-- ==================== PRELOADER ==================== -->
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-icon">
+                <i class="fas fa-code"></i>
+            </div>
+            <div class="loader-dots">
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar navbar-expand-lg" role="navigation" aria-label="Navegación principal">
+        <div class="container">
+            <a class="navbar-brand" href="#inicio">
+                <span class="brand-icon"><i class="fas fa-code"></i></span>
+                CodeLabs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#inicio">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#nosotros">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#servicios">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-cta" href="#contacto">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== MAIN ==================== -->
+    <main>
+        <!-- ===== HERO ===== -->
+        <section id="inicio" class="hero-section" aria-labelledby="heroTitle">
+            <div class="floating-shapes">
+                <div class="shape"></div>
+                <div class="shape"></div>
+                <div class="shape"></div>
+            </div>
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6" data-aos="fade-right" data-aos-duration="700">
+                        <span class="hero-badge">
+                            <i class="fas fa-sparkles"></i>
+                            Innovación Tecnológica 2024
+                        </span>
+                        <h1 id="heroTitle" class="hero-title">
+                            <!-- 
+                                MODIFICACIÓN: 
+                                Agregado 'data-words' con múltiples frases separadas por '|'.
+                                Antes era solo un 'data-text' con una frase.
+                            -->
+                            <span class="typing-text" data-words="Impulsamos tu futuro digital|Innovación en cada línea|Tecnología de punta|Soluciones Cloud Nativas"></span>
+                        </h1>
+                        <p class="hero-desc">
+                            Transformamos ideas en soluciones digitales de clase mundial con tecnología de punta y equipos excepcionales.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="#servicios" class="btn-primary-custom">
+                                Explorar Servicios <i class="fas fa-arrow-right"></i>
+                            </a>
+                            <a href="#contacto" class="btn-outline-custom">
+                                <i class="fas fa-play-circle"></i> Ver Demo
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-visual">
+                            <div class="hero-card">
+                                <div class="code-editor">
+                                    <div class="code-header">
+                                        <div class="code-dot"></div>
+                                        <div class="code-dot"></div>
+                                        <div class="code-dot"></div>
+                                    </div>
+                                    <div class="code-line"><span class="code-comment">// Creando el futuro</span></div>
+                                    <div class="code-line"><span class="code-keyword">const</span> <span class="code-function">future</span> = {</div>
+                                    <div class="code-line">  <span class="code-string">innovation</span>: <span class="code-string">'synapse'</span>,</div>
+                                    <div class="code-line">  <span class="code-string">technology</span>: <span class="code-string">'cutting-edge'</span>,</div>
+                                    <div class="code-line">  <span class="code-string">success</span>: <span class="code-keyword">true</span></div>
+                                    <div class="code-line">};</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ABOUT ===== -->
+        <section id="nosotros" class="about-section" aria-labelledby="aboutTitle">
+            <div class="container">
+                <div class="row align-items-center g-4 g-lg-5">
+                    <div class="col-lg-6" data-aos="fade-right" data-aos-duration="900">
+                        <div class="about-img-wrapper">
+                            <img src="https://picsum.photos/seed/synapse-team/700/580" alt="Nuestro equipo colaborando en la oficina" loading="lazy">
+                            <div class="about-img-accent"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" data-aos="fade-left" data-aos-duration="900" data-aos-delay="150">
+                        <span class="section-label">Sobre Nosotros</span>
+                        <h2 id="aboutTitle" class="section-title">Innovación en cada línea de código</h2>
+                        <p class="mb-4">
+                            En CodeLabs no solo escribimos código — construimos ecosistemas digitales completos. Nacimos con la misión de democratizar la tecnología de punta para empresas emergentes y corporaciones.
+                        </p>
+                        <div class="row g-0">
+                            <div class="col-sm-6">
+                                <div class="about-feature" data-aos="fade-up" data-aos-delay="250">
+                                    <div class="about-feature-icon"><i class="fas fa-bolt"></i></div>
+                                    <div>
+                                        <h5>Metodologías Ágiles</h5>
+                                        <p>Scrum y Kanban para entrega continua.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-feature" data-aos="fade-up" data-aos-delay="350">
+                                    <div class="about-feature-icon"><i class="fas fa-cloud"></i></div>
+                                    <div>
+                                        <h5>Cloud-Native</h5>
+                                        <p>Arquitectura diseñada para la nube.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-feature" data-aos="fade-up" data-aos-delay="450">
+                                    <div class="about-feature-icon"><i class="fas fa-shield-halved"></i></div>
+                                    <div>
+                                        <h5>Ciberseguridad</h5>
+                                        <p>Protección integral en cada capa.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-feature" data-aos="fade-up" data-aos-delay="550">
+                                    <div class="about-feature-icon"><i class="fas fa-chart-line"></i></div>
+                                    <div>
+                                        <h5>Escalabilidad</h5>
+                                        <p>Soluciones que crecen contigo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SERVICES ===== -->
+        <section id="servicios" class="services-section" aria-labelledby="servicesTitle">
+            <div class="container">
+                <div class="text-center mb-5" data-aos="fade-up">
+                    <span class="section-label" style="justify-content: center;">Nuestros Servicios</span>
+                    <h2 id="servicesTitle" class="section-title">Catálogo de Servicios</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-card-wrapper">
+                            <div class="service-card">
+                                <div class="service-icon"><i class="fas fa-laptop-code"></i></div>
+                                <h4>Desarrollo Web</h4>
+                                <p>Sitios corporativos y aplicaciones web progresivas de alta velocidad con las tecnologías más modernas.</p>
+                                <a href="#contacto" class="service-link">Saber más <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="200">
+                        <div class="service-card-wrapper">
+                            <div class="service-card">
+                                <div class="service-icon"><i class="fas fa-mobile-screen-button"></i></div>
+                                <h4>Apps Móviles</h4>
+                                <p>Desarrollo nativo y multiplataforma con React Native y Flutter para iOS y Android.</p>
+                                <a href="#contacto" class="service-link">Saber más <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="300">
+                        <div class="service-card-wrapper">
+                            <div class="service-card">
+                                <div class="service-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+                                <h4>Cloud & DevOps</h4>
+                                <p>Infraestructura escalable en AWS, Azure y GCP con pipelines CI/CD completamente automatizados.</p>
+                                <a href="#contacto" class="service-link">Saber más <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="400">
+                        <div class="service-card-wrapper">
+                            <div class="service-card">
+                                <div class="service-icon"><i class="fas fa-brain"></i></div>
+                                <h4>Inteligencia Artificial</h4>
+                                <p>Integración de modelos ML, chatbots inteligentes y análisis de datos predictivo para tu negocio.</p>
+                                <a href="#contacto" class="service-link">Saber más <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BLOG ===== -->
+        <section id="blog" class="services-section" aria-labelledby="blogTitle">
+            <div class="container">
+                <div class="section-heading-row d-flex justify-content-between align-items-end mb-5" data-aos="fade-up">
+                    <div>
+                        <span class="section-label">Blog & Noticias</span>
+                        <h2 id="blogTitle" class="section-title">Últimas Publicaciones</h2>
+                    </div>
+                    <a href="#" class="btn-outline-custom d-none d-md-inline-flex" style="padding: 10px 24px; font-size: 0.85rem;">
+                        Ver todo <i class="fas fa-arrow-right ms-1" style="font-size:0.7rem;"></i>
+                    </a>
+                </div>
+                <div class="row g-4">
+                    <article class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="blog-card">
+                            <div class="blog-img-wrapper">
+                                <img src="https://picsum.photos/seed/synapse-blog1/600/375" alt="Artículo sobre WebAssembly" loading="lazy">
+                                <span class="blog-tag">Tecnología</span>
+                            </div>
+                            <div class="blog-body">
+                                <div class="blog-meta">
+                                    <span><i class="fas fa-calendar-alt me-1"></i> 18 Oct, 2023</span>
+                                    <span><i class="fas fa-clock me-1"></i> 5 min</span>
+                                </div>
+                                <h4>El auge del WebAssembly en 2024</h4>
+                                <p>Cómo WebAssembly está redefiniendo el rendimiento de las aplicaciones web modernas.</p>
+                                <a href="#" class="blog-read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="blog-card">
+                            <div class="blog-img-wrapper">
+                                <img src="https://picsum.photos/seed/synapse-blog2/600/375" alt="Artículo sobre arquitectura de microservicios" loading="lazy">
+                                <span class="blog-tag">Arquitectura</span>
+                            </div>
+                            <div class="blog-body">
+                                <div class="blog-meta">
+                                    <span><i class="fas fa-calendar-alt me-1"></i> 22 Oct, 2023</span>
+                                    <span><i class="fas fa-clock me-1"></i> 8 min</span>
+                                </div>
+                                <h4>Microservicios vs Monolitos modulares</h4>
+                                <p>Un análisis práctico para elegir la mejor arquitectura para tu próximo proyecto.</p>
+                                <a href="#" class="blog-read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="blog-card">
+                            <div class="blog-img-wrapper">
+                                <img src="https://picsum.photos/seed/synapse-blog3/600/375" alt="Artículo sobre ciberseguridad" loading="lazy">
+                                <span class="blog-tag">Seguridad</span>
+                            </div>
+                            <div class="blog-body">
+                                <div class="blog-meta">
+                                    <span><i class="fas fa-calendar-alt me-1"></i> 05 Nov, 2023</span>
+                                    <span><i class="fas fa-clock me-1"></i> 6 min</span>
+                                </div>
+                                <h4>Ciberseguridad: tendencias 2024</h4>
+                                <p>Las amenazas y defensas que todo equipo de desarrollo debe conocer este año.</p>
+                                <a href="#" class="blog-read-more">Leer más <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CONTACT ===== -->
+        <section id="contacto" class="contact-section" aria-labelledby="contactTitle">
+            <div class="container">
+                <div class="row g-4 g-lg-5">
+                    
+                    <!-- 
+                        MODIFICACIÓN: 
+                        Añadida animación de entrada 'fade-right' con duración 900ms a la columna izquierda 
+                        y animaciones en cascada a las tarjetas internas.
+                    -->
+                    <div class="col-lg-5" data-aos="fade-right" data-aos-duration="900">
+                        <span class="section-label">Contáctenos</span>
+                        <h2 id="contactTitle" class="section-title">Hablemos de tu proyecto</h2>
+                        <p class="mb-4">Cuéntanos tu idea y te propondremos una solución a medida, con cronograma y presupuesto transparente.</p>
+
+                        <!-- Tarjetas con animaciones en cascada (data-aos-delay) -->
+                        <div class="contact-info-card" data-aos="fade-up" data-aos-delay="200">
+                            <div class="contact-info-icon"><i class="fas fa-location-dot"></i></div>
+                            <div>
+                                <h6>Ubicación</h6>
+                                <p>Av. Tecnológica 123, Cd. del Conocimiento</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-card" data-aos="fade-up" data-aos-delay="300">
+                            <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
+                            <div>
+                                <h6>Email</h6>
+                                <p>hola@synapsecode.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-card" data-aos="fade-up" data-aos-delay="400">
+                            <div class="contact-info-icon"><i class="fas fa-phone"></i></div>
+                            <div>
+                                <h6>Teléfono</h6>
+                                <p>+1 234 567 890</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-7" data-aos="fade-left" data-aos-duration="900" data-aos-delay="150">
+                        <div class="contact-form-card">
+                            <form id="contactForm" novalidate>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="formName">Nombre Completo</label>
+                                            <input type="text" id="formName" class="form-control-custom" placeholder="Tu nombre" required aria-required="true">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="formEmail">Correo Electrónico</label>
+                                            <input type="email" id="formEmail" class="form-control-custom" placeholder="tu@email.com" required aria-required="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="formSubject">Asunto</label>
+                                    <input type="text" id="formSubject" class="form-control-custom" placeholder="¿En qué podemos ayudarte?" required aria-required="true">
+                                </div>
+                                <div class="form-group">
+                                    <label for="formMessage">Mensaje</label>
+                                    <textarea id="formMessage" class="form-control-custom" placeholder="Describe tu proyecto o necesidad..." required aria-required="true"></textarea>
+                                </div>
+                                <button type="submit" class="btn-primary-custom w-100" style="justify-content: center;">
+                                    Enviar Mensaje <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="row g-4 g-lg-5">
+                <div class="col-lg-4">
+                    <div class="footer-brand">
+                        <span class="brand-icon"><i class="fas fa-code"></i></span>
+                        CodeLabs
+                    </div>
+                    <p class="footer-desc">Transformamos ideas en soluciones digitales de clase mundial con tecnología de punta y equipos excepcionales.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="footer-heading">Empresa</h6>
+                    <ul class="footer-links">
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="footer-heading">Servicios</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">Desarrollo Web</a></li>
+                        <li><a href="#">Apps Móviles</a></li>
+                        <li><a href="#">Cloud & DevOps</a></li>
+                        <li><a href="#">Inteligencia Artificial</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h6 class="footer-heading">Newsletter</h6>
+                    <p style="font-size: 0.88rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 1rem;">Recibe las últimas tendencias en tecnología directamente en tu bandeja.</p>
+                    <form class="d-flex gap-2" onsubmit="event.preventDefault(); this.querySelector('input').value=''; alert('¡Suscrito exitosamente!');">
+                        <input type="email" class="form-control-custom" placeholder="tu@email.com" required aria-label="Email para newsletter" style="flex:1; padding: 12px 16px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
+                        <button type="submit" class="btn-primary-custom" style="padding: 12px 20px; white-space: nowrap;" aria-label="Suscribirse">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 CodeLabs. Todos los derechos reservados.</p>
+                <ul class="footer-bottom-links">
+                    <li><a href="#">Privacidad</a></li>
+                    <li><a href="#">Términos</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+    (function() {
+        'use strict';
+
+        /* ==============================
+           1. PRELOADER
+           ============================== */
+        const preloader = document.getElementById('preloader');
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+                triggerHeroAnimations();
+            }, 2000);
+        });
+        // Fallback: ocultar preloader después de 4s máx.
+        setTimeout(() => {
+            if (!preloader.classList.contains('hidden')) {
+                preloader.classList.add('hidden');
+                triggerHeroAnimations();
+            }
+        }, 2800);
+
+        /* ==============================
+           2. HERO TEXT REVEAL & TYPING (MEJORADO)
+           ============================== */
+        function triggerHeroAnimations() {
+            const badge = document.querySelector('.hero-badge');
+            const desc = document.querySelector('.hero-desc');
+            const buttons = document.querySelector('.hero-buttons');
+            const visual = document.querySelector('.hero-visual');
+
+            setTimeout(() => badge && badge.classList.add('active'), 200);
+            setTimeout(() => desc && desc.classList.add('active'), 600);
+            setTimeout(() => buttons && buttons.classList.add('active'), 750);
+            setTimeout(() => visual && visual.classList.add('active'), 400);
+
+            // Iniciar animación de typing
+            startTypingAnimation();
+        }
+
+        function startTypingAnimation() {
+            const typingElement = document.querySelector('.typing-text');
+            if (!typingElement) return;
+
+            // MODIFICACIÓN: Soporte para múltiples frases separadas por '|'
+            const words = typingElement.getAttribute('data-words').split('|');
+            let wordIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            
+            // Velocidades (ms)
+            const typeSpeed = 100;
+            const deleteSpeed = 50;
+            const pauseTime = 2000; // Tiempo de espera después de escribir una palabra
+
+            function type() {
+                const currentWord = words[wordIndex];
+                
+                if (isDeleting) {
+                    // Borrando caracteres
+                    typingElement.textContent = currentWord.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    // Escribiendo caracteres
+                    typingElement.textContent = currentWord.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let typeDelay = isDeleting ? deleteSpeed : typeSpeed;
+
+                // Si terminó de escribir
+                if (!isDeleting && charIndex === currentWord.length) {
+                    typeDelay = pauseTime; // Pausa al final de la palabra
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    // Si terminó de borrar
+                    isDeleting = false;
+                    wordIndex = (wordIndex + 1) % words.length; // Siguiente palabra (ciclo)
+                    typeDelay = 500; // Pequeña pausa antes de empezar a escribir la siguiente
+                }
+
+                setTimeout(type, typeDelay);
+            }
+
+            // Iniciar ciclo
+            setTimeout(type, 500);
+        }
+
+        /* ==============================
+           3. AOS INIT CON SCROLL BIDIRECCIONAL
+           ============================== */
+        AOS.init({
+            once: false, // Permitir animaciones en ambos sentidos
+            offset: 80,
+            duration: 700,
+            easing: 'ease-out-cubic',
+            disable: function() { return window.innerWidth < 768 && 'phone'; }
+        });
+
+        /* ==============================
+           4. SCROLL PROGRESS BAR
+           ============================== */
+        const scrollProgress = document.querySelector('.scroll-progress');
+        function updateScrollProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            scrollProgress.style.width = progress + '%';
+        }
+
+        /* ==============================
+           5. NAVBAR CON FONDO PERMANENTE
+           ============================== */
+        const navbar = document.querySelector('.navbar');
+        let lastScroll = 0;
+        function updateNavbar() {
+            const currentScroll = window.scrollY;
+            if (currentScroll > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            lastScroll = currentScroll;
+        }
+
+        /* ==============================
+           6. ACTIVE NAV LINKS (Intersection Observer)
+           ============================== */
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link:not(.nav-cta)');
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-30% 0px -70% 0px' });
+        sections.forEach(s => navObserver.observe(s));
+
+        /* ==============================
+           7. CLOSE MOBILE NAV ON LINK CLICK
+           ============================== */
+        const navCollapse = document.getElementById('mainNav');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const bsCollapse = bootstrap.Collapse.getInstance(navCollapse);
+                if (bsCollapse) bsCollapse.hide();
+            });
+        });
+        document.querySelector('.nav-cta').addEventListener('click', () => {
+            const bsCollapse = bootstrap.Collapse.getInstance(navCollapse);
+            if (bsCollapse) bsCollapse.hide();
+        });
+
+        /* ==============================
+           8. SCROLL TO TOP BUTTON
+           ============================== */
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        function updateScrollTopBtn() {
+            if (window.scrollY > 600) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        }
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        /* ==============================
+           9. COMBINED SCROLL HANDLER (Rendimiento)
+           ============================== */
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    updateScrollProgress();
+                    updateNavbar();
+                    updateScrollTopBtn();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+
+        /* ==============================
+           10. CONTACT FORM
+           ============================== */
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('formName').value.trim();
+            const email = document.getElementById('formEmail').value.trim();
+            const subject = document.getElementById('formSubject').value.trim();
+            const message = document.getElementById('formMessage').value.trim();
+
+            // Validación básica
+            if (!name || !email || !subject || !message) {
+                highlightEmptyFields();
+                return;
+            }
+            if (!isValidEmail(email)) {
+                document.getElementById('formEmail').style.borderColor = '#ef4444';
+                return;
+            }
+
+            const btn = this.querySelector('button[type="submit"]');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Enviando...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check me-2"></i> ¡Enviado!';
+                btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                btn.style.boxShadow = '0 4px 20px rgba(34, 197, 94, 0.3)';
+
+                setTimeout(() => {
+                    contactForm.reset();
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.background = '';
+                    btn.style.boxShadow = '';
+                }, 2000);
+            }, 1500);
+        });
+
+        function highlightEmptyFields() {
+            contactForm.querySelectorAll('[required]').forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#ef4444';
+                    field.addEventListener('input', function handler() {
+                        field.style.borderColor = '';
+                        field.removeEventListener('input', handler);
+                    }, { once: true });
+                }
+            });
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Limpiar estilos de error al hacer focus
+        contactForm.querySelectorAll('.form-control-custom').forEach(field => {
+            field.addEventListener('focus', () => {
+                field.style.borderColor = '';
+            });
+        });
+
+        /* ==============================
+           11. MEJORAS DE ANIMACIONES ADICIONALES
+           ============================== */
+        // Animación de entrada para las tarjetas de servicios
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Aplicar a las tarjetas de servicios
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(30deg)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            cardObserver.observe(card);
+        });
+
+
+
+    })();
+    </script>
+</body>
+</html>
